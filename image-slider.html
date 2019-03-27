@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+    body {
+        box-sizing: border-box;
+    }
+    img {
+        margin: 0px;
+        padding: 0px;
+    }
+    .image {
+        position: relative;
+        line-height: 0;
+    }
+    .left {
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        display: inline-block;
+        padding: 3px;
+        transform: rotate(135deg);
+        -webkit-transform: rotate(135);
+    }
+    .outer-left {
+        position: absolute;
+        z-index: +1;
+        top: 142.5px;
+        left: 10px;
+        padding: 10px 15px;
+        background-color: rgba(0,0,0,0.3);
+    }
+    .outer-left:hover {
+        background-color: black;
+    }
+    .right {
+        border: solid white;
+        border-width: 0px 3px 3px 0;
+        padding: 3px;
+        display: inline-block;
+        transform: rotate(-45deg);
+    }
+    .outer-right {
+        position: absolute;
+        z-index: +1;
+        padding: 10px 15px;
+        background-color: rgba(0,0,0,0.3);
+        top: 142.5px;
+        right: 10px;
+    }
+    .outer-right:hover {
+        background-color: black;
+    }
+    .thumbnail > img {
+        width: 100px;
+        height: 100px;
+    }
+    </style>
+</head>
+<body>
+    <div class='image' style="width: 300px; height: 300px;">
+    <span onclick="moveLeft()" class='outer-left'><span class='left'></span></span>
+    <img class="toye" id='main-image' style="width: 300px; height: 300px;" src="toye.jpg" alt="">
+    <span onclick="moveRight()" class='outer-right'><span class='right'></span></span>
+    <div class='thumbnail'>
+        <img onclick='firstImage()' id='img1' style="float: left;" src="toye.jpg" alt="">
+        <img onclick='secondImage()' style="float: left;" src="toye2.jpg" alt="">
+        <img onclick='thirdImage()' src="toye3.jpg" alt="">
+    </div>
+    </div>
+    <script>
+    "use strict";
+    // the code below shows what happens when the small images in the thumbnail class are clicked.
+    let mainImage = document.getElementById('main-image');
+    function firstImage() {
+        mainImage.src = 'toye.jpg';
+    }
+    function secondImage() {
+        mainImage.src = 'toye2.jpg';
+    }
+    function thirdImage() {
+        mainImage.src = 'toye3.jpg';
+    }
+    // the code below shows what happens when the previous/moveLeft button is clicked.
+    // I also choosed to use a different method to achieve the same process in the function moveLeft vs moveRight.
+    let x = 1;
+    let pic = '';
+    function moveLeft(pic) {
+        
+        if(x == 1) {
+            pic = "toye3.jpg";
+        } else if (x == 2) {
+            pic = 'toye2.jpg';
+        } else if (x == 3) {
+            pic = 'toye.jpg';
+        } 
+        x++;
+        if(x == 4){
+            x = 1;
+        }
+        document.getElementById('main-image').src = pic;
+    }
+    // the code below shows what happens when the button next/moveRight is clicked upon.
+    // using another method from different from that used in function moveLeft()
+    function moveRight() {
+        if(mainImage.className === "toye") {
+            mainImage.src = "toye2.jpg";
+            mainImage.className = 'toye2';
+        } else if (mainImage.className === "toye2") {
+            mainImage.src = 'toye3.jpg';
+            mainImage.className = 'toye3';
+        } else if (mainImage.className === 'toye3') {
+            mainImage.src = 'toye.jpg';
+            mainImage.className = 'toye';
+        }  
+    }
+    {
+        // the code below shows that the image would change by itself every 4 seconds. 
+        // Also good to note is the use of arrow functions and how the let is declared in a block scope.
+        let x = 1;
+        const auto = setInterval(() => {
+            if(x == 1) {
+                pic = "toye3.jpg";
+            } else if (x == 2) {
+                pic = 'toye2.jpg';
+            } else if (x == 3) {
+                pic = 'toye.jpg';
+            } 
+            x++;
+            if(x == 4){
+            x = 1;
+            }
+            document.getElementById('main-image').src = pic;
+        }, 4000);
+    }
+    </script>
+    
+</body>
+</html>

@@ -1,2 +1,1 @@
-#myApp
-This is my App
+This small javascript app is still in progress as I would still like to make it fade as it changes the images.
