@@ -8,14 +8,24 @@
     <style>
     body {
         box-sizing: border-box;
+        margin: 0;
+        padding: 0;
     }
     img {
         margin: 0px;
         padding: 0px;
     }
     .image {
+        display: inline-block;
         position: relative;
         line-height: 0;
+    }
+    .image-text {
+        position: absolute;
+        margin: 0;
+        top: 10px;
+        right: 10px;
+        color: white;
     }
     .left {
         border: solid white;
@@ -57,85 +67,140 @@
     .thumbnail > img {
         width: 100px;
         height: 100px;
+        opacity: 0.5;
+    }
+    .thumbnail > img:hover, img.active {
+        opacity: 1.0;
     }
     </style>
 </head>
 <body>
     <div class='image' style="width: 300px; height: 300px;">
-    <span onclick="moveLeft()" class='outer-left'><span class='left'></span></span>
+    <span onclick="moveLeft(thumbnailOpacity)" class='outer-left'><span class='left'></span></span>
+    <p id="comment" class="image-text">looks into the future</p>
     <img class="toye" id='main-image' style="width: 300px; height: 300px;" src="toye.jpg" alt="">
-    <span onclick="moveRight()" class='outer-right'><span class='right'></span></span>
+    <span onclick="moveRight(thumbnailOpacity)" class='outer-right'><span class='right'></span></span>
+    <!-- div for the small thumbnail images -->
     <div class='thumbnail'>
-        <img onclick='firstImage()' id='img1' style="float: left;" src="toye.jpg" alt="">
-        <img onclick='secondImage()' style="float: left;" src="toye2.jpg" alt="">
-        <img onclick='thirdImage()' src="toye3.jpg" alt="">
+        <img onclick='firstImage(thumbnailOpacity)' id='img1' class="active" style="float: left;" src="toye.jpg" alt="">
+        <img onclick='secondImage(thumbnailOpacity)'  id='img2' style="float: left;" src="toye2.jpg" alt="">
+        <img onclick='thirdImage(thumbnailOpacity)' id='img3' src="toye3.jpg" alt="">
     </div>
     </div>
     <script>
     "use strict";
+    var auto;
     // the code below shows what happens when the small images in the thumbnail class are clicked.
     let mainImage = document.getElementById('main-image');
-    function firstImage() {
+    function firstImage(callback) {
         mainImage.src = 'toye.jpg';
+        mainImage.classList.remove('toye2', 'toye3');
+        mainImage.classList.add('toye');
+        callback();
     }
-    function secondImage() {
+    function secondImage(callback) {
         mainImage.src = 'toye2.jpg';
+        mainImage.classList.remove('toye', 'toye3');
+        mainImage.classList.add('toye2');
+        callback();
     }
-    function thirdImage() {
+    function thirdImage(callback) {
         mainImage.src = 'toye3.jpg';
+        mainImage.classList.remove('toye', 'toye2');
+        mainImage.classList.add('toye3');
+        callback();
     }
-    // the code below shows what happens when the previous/moveLeft button is clicked.
-    // I also choosed to use a different method to achieve the same process in the function moveLeft vs moveRight.
-    let x = 1;
-    let pic = '';
-    function moveLeft(pic) {
-        
-        if(x == 1) {
-            pic = "toye3.jpg";
-        } else if (x == 2) {
-            pic = 'toye2.jpg';
-        } else if (x == 3) {
-            pic = 'toye.jpg';
-        } 
-        x++;
-        if(x == 4){
-            x = 1;
+
+    // below is the callback function called thumbnailOpacity
+    function thumbnailOpacity() {
+        if(mainImage.classList.contains('toye') == true) {
+            document.getElementById('img1').classList.add('active');
+            document.getElementById('img2').classList.remove('active');
+            document.getElementById('img3').classList.remove('active');
+            document.getElementById('comment').innerHTML = 'looks into the future';
+        } else if(mainImage.classList.contains('toye3') == true) {
+            document.getElementById('img1').classList.remove('active');
+            document.getElementById('img2').classList.remove('active');
+            document.getElementById('img3').classList.add('active');
+            document.getElementById('comment').innerHTML = 'looks away';
+        } else if(mainImage.classList.contains('toye2') == true) {
+            document.getElementById('img1').classList.remove('active');
+            document.getElementById('img2').classList.add('active');
+            document.getElementById('img3').classList.remove('active');
+            document.getElementById('comment').innerHTML = 'made it, glass off!';
         }
-        document.getElementById('main-image').src = pic;
+    } 
+
+    // {
+        // the code below shows that the image would change by itself every 5 seconds. 
+        // Also good to note is the use of arrow functions and how the let is declared in a block scope.
+    //     let x = 1;
+    //     auto = setInterval(() => {
+    //         if(x == 1) {
+    //             pic = "toye3.jpg";
+    //             mainImage.className = "toye3.jpg";
+    //         } else if (x == 2) {
+    //             pic = 'toye2.jpg';
+    //             mainImage.className = "toye2.jpg";
+    //         } else if (x == 3) {
+    //             pic = 'toye.jpg';
+    //             mainImage.className = "toye.jpg";
+    //         } 
+    //         x++;
+    //         // if(x == 4){
+    //         // clearInterval(auto);
+    //         // }
+    //         mainImage.src = pic;  
+    //     }, 5000);
+
+    // } 
+
+    // the code below shows what happens when the previous/moveLeft button is clicked.
+    let pic = '';
+    function moveLeft(callback) {
+        if(mainImage.classList.contains('toye') == true) {
+            pic = 'toye3.jpg';
+            mainImage.classList.remove('toye');
+            mainImage.classList.add('toye3');
+        } else if(mainImage.classList.contains('toye3') == true) {
+            pic = 'toye2.jpg';
+            mainImage.classList.remove('toye3');
+            mainImage.classList.add('toye2');
+        } else if(mainImage.classList.contains('toye2') == true) {
+            pic = 'toye.jpg';
+            mainImage.classList.remove('toye2');
+            mainImage.classList.add('toye');
+        }
+        mainImage.src = pic;
+        callback();
+       
     }
     // the code below shows what happens when the button next/moveRight is clicked upon.
-    // using another method from different from that used in function moveLeft()
-    function moveRight() {
-        if(mainImage.className === "toye") {
-            mainImage.src = "toye2.jpg";
-            mainImage.className = 'toye2';
-        } else if (mainImage.className === "toye2") {
-            mainImage.src = 'toye3.jpg';
-            mainImage.className = 'toye3';
-        } else if (mainImage.className === 'toye3') {
-            mainImage.src = 'toye.jpg';
-            mainImage.className = 'toye';
-        }  
+    function moveRight(callback) {
+        if(mainImage.classList.contains('toye') == true) {
+            pic = 'toye2.jpg';
+            mainImage.classList.remove('toye');
+            mainImage.classList.add('toye2');
+        } else if(mainImage.classList.contains('toye2') == true) {
+            pic = 'toye3.jpg';
+            mainImage.classList.remove('toye2');
+            mainImage.classList.add('toye3');
+        } else if(mainImage.classList.contains('toye3') == true) {
+            pic = 'toye.jpg';
+            mainImage.classList.remove('toye3');
+            mainImage.classList.add('toye');
+        }
+        mainImage.src = pic;
+        callback();
     }
-    {
-        // the code below shows that the image would change by itself every 4 seconds. 
-        // Also good to note is the use of arrow functions and how the let is declared in a block scope.
-        let x = 1;
-        const auto = setInterval(() => {
-            if(x == 1) {
-                pic = "toye3.jpg";
-            } else if (x == 2) {
-                pic = 'toye2.jpg';
-            } else if (x == 3) {
-                pic = 'toye.jpg';
-            } 
-            x++;
-            if(x == 4){
-            x = 1;
-            }
-            document.getElementById('main-image').src = pic;
-        }, 4000);
-    }
+    
+    // let the auto restarts it time counting when the button is clicked upon
+    // ensure that the changing of the image work in alternation to the buttons
+    // makes the image change fade out as it moves to the next
+    // make the opacity of the thumbnails images work with the thumbnails
+    // I muted the setInterval because it affects my buttonleft and right, working on it...
+    // work on the font family of your texts.
+
     </script>
     
 </body>
